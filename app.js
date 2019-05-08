@@ -2,6 +2,8 @@ const express = require('express');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
 const port = parseInt(process.env.PORT, 10) || 9000;
+const db = require('./models/index');
+const routes = require('./routes/');
 
 // Set up the express app
 const app = express();
@@ -10,13 +12,29 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// Setup a default catch-all route that sends back a welcome message in JSON format.
-app.get('*', (req, res) => res.status(200).send({
-message: 'Welcome!',
-}));
+// version routes.
+app.use('/api/v1', routes);
 
-app.listen(port, () => {
-  console.log(`App listening on ${port}`);
+//  catch all 500 error
+app.use((err, req, res, next) => {
+  return res.status(500)
+    .send({ message: 'An error occured' })
 });
+
+db.sequelize.authenticate()
+  .then(() => {
+    console.log('Connected to database');
+    app.listen(port, () => {
+      console.log(`App listening on ${port}`);
+    });
+  })
+  .catch(err => console.error("Unable to connect to database", err));
+
+// db.sequelize.sync().then(() => {
+//   console.log('Connected to database!!');
+//   app.listen(port, () => {
+//     console.log(`App listening on ${port}`);
+//   });
+// })
 
 module.exports = app;
