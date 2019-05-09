@@ -10,6 +10,11 @@ module.exports = {
     host: process.env.DB_HOST,
     dialect: process.env.DB_DIALECT
   },
+  facebook: {
+    app_id: process.env.FACEBOOK_APP_ID,
+    app_secret: process.env.FACEBOOK_SECRET,
+    callback: process.env.CALLBACK_URL
+  },
   "test": {
     "username": "root",
     "password": null,
