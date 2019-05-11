@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const { Product, ProductCategory } = require('../models');
+const { Product, ProductCategory, Category, Department } = require('../models');
 const errorBody = require('../utils/errorStructure');
  
 
@@ -132,5 +132,33 @@ exports.productDetails = async (req, res, next) => {
     }
   } else {
     res.status(400).send(errorBody(400, "USR_02", "The field example is empty.", "product_id"))
+  }
+}
+
+exports.productLocation = async (req, res, next) => {
+  const { product_id } = req.params;
+  try {
+    const productLocation = await ProductCategory.findOne({
+      where: { product_id },
+      include: [{
+        model: Category,
+        include: [{ model: Department, attributes: ['name'] }],
+        attributes: { exclude: ['description'] }
+      }]
+    });
+    if (!productLocation) {
+      res.status(200).send({ message: 'No location for this product_id' })
+    }
+    const responseObj = {
+      category_id: productLocation.category_id,
+      category_name: productLocation.Category.name,
+      department_id: productLocation.Category.department_id,
+      department_name: productLocation.Category.Department.name,
+    }
+    res.status(200).send(responseObj);
+  }
+  catch (error) {
+    console.log(error);
+    next(error);
   }
 }

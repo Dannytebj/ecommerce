@@ -22,7 +22,12 @@ module.exports = (sequelize, DataTypes) => {
   });
   Department.associate = function(models) {
     // associations can be defined here
-    // Department.hasMany(models.Category, { })
+    Department.hasMany(models.Category, { 
+      foreignKey: 'department_id'
+    })
+    // Department.belongsTo(models.Category, {
+    //   foreignKey: 'department_id'
+    // })
   };
   return Department;
 };

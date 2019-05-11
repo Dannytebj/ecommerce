@@ -26,7 +26,9 @@ module.exports = (sequelize, DataTypes) => {
   });
   Category.associate = function(models) {
     // associations can be defined here
-    // Category.belongsTo(models.Department, {})
+    Category.belongsTo(models.Department, {
+        foreignKey: 'department_id'
+    })
   };
   return Category;
 };
