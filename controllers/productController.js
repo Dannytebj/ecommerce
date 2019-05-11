@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const { Product } = require('../models');
+const { Product, ProductCategory } = require('../models');
 const errorBody = require('../utils/errorStructure');
  
 
@@ -84,7 +84,6 @@ exports.productSearch = async (req, res, next) => {
         return res.status(200).send(records);
   
     } catch (error) {
-      console.log(error)
       next(error);
     }
   } else {
@@ -93,11 +92,25 @@ exports.productSearch = async (req, res, next) => {
   
 }
 
-  // where: {
-  //   name: { $like: `%${query_string}%` },
-  //   $or: [
-  //     {
-  //       description: { $like: `%${query_string}%` }
-  //     },
-  //   ]
-  // }
+exports.productsInCategory = async (req, res, next) => {
+  const { category_id } = req.params;
+
+  try {
+    const products = await ProductCategory.findAndCountAll({ where: { category_id }, include: [{ model: Product }]})
+    if (!products) {
+      return res.status(200).send({ message: 'There are no products in this category' });
+    }
+    const rows = [];
+    products.rows.forEach((row) => {
+      rows.push(row.Products[0]);
+    })
+    return res.status(200).send({
+      count: products.count,
+      rows
+    });
+  }
+  catch(error) {
+    console.log(error);
+    next(error);
+  }
+}
