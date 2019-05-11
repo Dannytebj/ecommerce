@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const { Product, ProductCategory, Category, Department, Review } = require('../models');
+const { Product, ProductCategory, Category, Department, Review, Customer } = require('../models');
 const errorBody = require('../utils/errorStructure');
  
 
@@ -170,35 +170,68 @@ exports.postReview = async (req, res, next) => {
   const { review, rating } = req.body;
   const { product_id } = req.params;
 
+  if (isNaN(Number(rating))) {
+    res.status(400).send({ message: 'Must be a valid number' });
+  } else {
+    try {
+      if (product_id.trim()) {
+        const productExists = await Product.findOne({ where: { product_id } });
+        if (!productExists) {
+          return res.status(404).send({
+            error: errorBody(404, "USR_05", "This product doesn't exist.", "product_id")
+          });
+        }
+        await Review.create({
+          product_id,
+          review,
+          rating,
+          customer_id: req.user.customer_id,
+          created_on: Date.now()
+        });
+        return res.status(201).send({ message: 'review successful' })
+      } else {
+        res.status(400).send({
+          error: errorBody(400, "USR_02", "product_id is required", "product_id")
+        })
+      }
+    }
+    catch (error) {
+      next(error);
+    }
+  }
+}
+
+exports.getProductReviews = async (req, res, next) => {
+  const { product_id } = req.params;
   try {
-    const productExists = await Product.findOne({ where: { product_id } });
-    if (!productExists) {
+    const reviews = await Product.findAll({
+      where: { product_id },
+      include: [{
+        model: Review,
+        attributes: ['rating', 'review', 'created_on'],
+        include: [{ model: Customer, attributes: ['name'] }]
+      }]
+    });
+    if (!reviews) {
       return res.status(404).send({
         error: errorBody(404, "USR_05", "This product doesn't exist.", "product_id")
       });
     }
-    await Review.create({
-      product_id,
-      review,
-      rating,
-      customer_id: 1,
-      created_on: Date.now()
-    });
-    return res.status(201).send({ message: 'review successful' })
+    const responseArr = [];
+    reviews[0].Reviews.forEach((row) => {
+      const responseObj = {
+        name: row.Customer.name,
+        review: row.review,
+        rating: row.rating,
+        created_on: row.created_on
+      }
+      responseArr.push(responseObj);
+    })
+    res.status(200).send(responseArr);
   }
   catch (error) {
-    console.log(error);
     next(error);
   }
-}
+};
 
-// `review_id` int(11) NOT NULL AUTO_INCREMENT,
-// `customer_id` int(11) NOT NULL,
-// `product_id` int(11) NOT NULL,
-// `review` text NOT NULL,
-// `rating` smallint(6) NOT NULL,
-// `created_on` datetime NOT NULL,
-// PRIMARY KEY (`review_id`),
-// KEY `idx_review_customer_id` (`customer_id`),
-// KEY `idx_review_product_id` (`product_id`)
-// ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+

@@ -71,10 +71,10 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: false,
     hooks: {
       beforeCreate: async function(customer) {
-        const salt = await bcrypt.genSalt(10);
-        customer.password = await bcrypt.hash(customer.password, salt);
+        customer.password = await bcrypt.hash(customer.password, 10);
       }
-    }
+    },
+
   });
   Customer.prototype.validPassword = async function (password) {
     return await bcrypt.compare(password, this.password);

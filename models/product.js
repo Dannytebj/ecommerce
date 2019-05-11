@@ -49,6 +49,9 @@ module.exports = (sequelize, DataTypes) => {
     underscored: true
   });
   Product.associate = function(models) {
+    Product.hasMany(models.Review, {
+      foreignKey: 'product_id'
+    });
   }
   return Product;
 }

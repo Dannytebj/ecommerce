@@ -48,25 +48,28 @@ exports.getCustomer = async (req, res, next) => {
 exports.login = async (req, res, next) => {
   const { email, password } = req.body;
   try {
-    const customerModel = await Customer.findOne({ where: { email }, attributes: { exclude: ['password'] } });
+    const customerModel = await Customer.findOne({ where: { email }});
     if (!customerModel) {
       res.status(404).send({
         error: errorBody(404, "USR_05", "The email doesn't exist.", "email")
       });
     } else {
-      if (!customerModel.validPassword(password)) {
+      const isValid = await customerModel.validPassword(password);
+      if (isValid) {
+        delete customerModel.password;
+        return res.status(200).send({
+          customer: { schema: customerModel },
+          accessToken: generateToken(customerModel),
+          expires_in: "24h"
+        })
+      }
         return res.status(401).send({
           error: errorBody(401, "USR_01", "Email or Password is invalid.", "email or password")
         })
-      }
-      return res.status(200).send({
-        customer: { schema: customerModel },
-        accessToken: generateToken(customerModel),
-        expires_in: "24h"
-      })
     }
   }
   catch (error) {
+    console.log(error);
     next(error);
   }
 }

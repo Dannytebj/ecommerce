@@ -13,7 +13,6 @@ exports.validateToken = (req, res, next) => {
     });
   }
   const accessToken = token.split('Bearer ')[1];
-  console.log(accessToken);
   jwt.verify(accessToken, secret, (error, decoded) => {
     if (error) {
       return res.status(401).send({
@@ -41,6 +40,7 @@ exports.validateCustomerReg = (req, res, next) => {
     }
   });
 };
+
 exports.validateCustomerLog = (req, res, next) => {
   let schema = Joi.object().keys({
     email: Joi.string().required().regex(/\S+@\S+\.\S+/).trim().error(() => 'Invalid email address'),
@@ -56,6 +56,22 @@ exports.validateCustomerLog = (req, res, next) => {
     }
   });
 };
+
+exports.validateReview = (req, res, next) => {
+  let schema = Joi.object().keys({
+    review: Joi.string().required().trim().error(() => 'review is required'),
+    rating: Joi.number().required().error(() => 'rating is required')
+  });
+   Joi.validate(req.body, schema, (error, data) => {
+      if (error) {
+        const message = error.details[0].message;
+        res.status(400).send({ message });
+      } else {
+        next();
+      }
+    });
+};
+
 exports.validateUpdateCustomer = (req, res, next) => {
   let schema = Joi.object().keys({
     name: Joi.string().trim().required().error(() => 'Name is required'),

@@ -42,6 +42,7 @@ app.use('/api/v1', routes);
 
 //  catch all 500 error
 app.use((err, req, res, next) => {
+  console.log(err);
   return res.status(500)
     .send({ message: 'An error occured' })
 });
