@@ -8,7 +8,13 @@ const {
 } = require('../controllers/attributesController');
 const { getCategories, getSingleCategory, getCategoriesOfDepartment } = require('../controllers/categoryController');
 const { getDepartments, getSingleDepartment } = require('../controllers/departmentController');
-const { getProducts, getSingleProduct, productSearch, productsInCategory } = require('../controllers/productController');
+const {
+  getProducts,
+  getSingleProduct,
+  productSearch,
+  productsInCategory,
+  productDetails
+ } = require('../controllers/productController');
 const {
   validateToken,
   validateCustomerReg,
@@ -46,6 +52,7 @@ router.get('/categories/inDepartment/:department_id', getCategoriesOfDepartment)
 router.get('/products', getProducts);
 router.get('/products/search/', productSearch);
 router.get('/products/:product_id', getSingleProduct);
+router.get('/products/:product_id/details', productDetails);
 router.get('/products/inCategory/:category_id', productsInCategory);
 
 

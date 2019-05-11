@@ -114,3 +114,23 @@ exports.productsInCategory = async (req, res, next) => {
     next(error);
   }
 }
+
+exports.productDetails = async (req, res, next) => {
+  const { product_id } = req.params;
+  if (product_id !== '') {
+    try {
+      const product = await Product.findOne({ where: { product_id }, attributes: { exclude: ['thumbnail', 'display'] } });
+      if (!product) {
+        return res.status(404).send({
+          message: `Product with id ${product_id} not found`
+        });
+      }
+      return res.status(200).send(product);
+    }
+    catch (error) {
+      next(error);
+    }
+  } else {
+    res.status(400).send(errorBody(400, "USR_02", "The field example is empty.", "product_id"))
+  }
+}
