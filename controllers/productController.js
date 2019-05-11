@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const { Product, ProductCategory, Category, Department } = require('../models');
+const { Product, ProductCategory, Category, Department, Review } = require('../models');
 const errorBody = require('../utils/errorStructure');
  
 
@@ -87,7 +87,9 @@ exports.productSearch = async (req, res, next) => {
       next(error);
     }
   } else {
-    res.status(400).send(errorBody(400, "USR_02", "The field example is empty.", "query_string"))
+    res.status(400).send({
+      error: errorBody(400, "USR_02", "The field example is empty.", "query_string")
+    })
   }
   
 }
@@ -131,7 +133,9 @@ exports.productDetails = async (req, res, next) => {
       next(error);
     }
   } else {
-    res.status(400).send(errorBody(400, "USR_02", "The field example is empty.", "product_id"))
+    res.status(400).send({
+      error: errorBody(400, "USR_02", "The field example is empty.", "product_id")
+    })
   }
 }
 
@@ -158,7 +162,43 @@ exports.productLocation = async (req, res, next) => {
     res.status(200).send(responseObj);
   }
   catch (error) {
+    next(error);
+  }
+}
+
+exports.postReview = async (req, res, next) => {
+  const { review, rating } = req.body;
+  const { product_id } = req.params;
+
+  try {
+    const productExists = await Product.findOne({ where: { product_id } });
+    if (!productExists) {
+      return res.status(404).send({
+        error: errorBody(404, "USR_05", "This product doesn't exist.", "product_id")
+      });
+    }
+    await Review.create({
+      product_id,
+      review,
+      rating,
+      customer_id: 1,
+      created_on: Date.now()
+    });
+    return res.status(201).send({ message: 'review successful' })
+  }
+  catch (error) {
     console.log(error);
     next(error);
   }
 }
+
+// `review_id` int(11) NOT NULL AUTO_INCREMENT,
+// `customer_id` int(11) NOT NULL,
+// `product_id` int(11) NOT NULL,
+// `review` text NOT NULL,
+// `rating` smallint(6) NOT NULL,
+// `created_on` datetime NOT NULL,
+// PRIMARY KEY (`review_id`),
+// KEY `idx_review_customer_id` (`customer_id`),
+// KEY `idx_review_product_id` (`product_id`)
+// ) ENGINE=MyISAM DEFAULT CHARSET=latin1;

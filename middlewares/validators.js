@@ -13,6 +13,7 @@ exports.validateToken = (req, res, next) => {
     });
   }
   const accessToken = token.split('Bearer ')[1];
+  console.log(accessToken);
   jwt.verify(accessToken, secret, (error, decoded) => {
     if (error) {
       return res.status(401).send({

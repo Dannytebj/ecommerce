@@ -49,12 +49,6 @@ module.exports = (sequelize, DataTypes) => {
     underscored: true
   });
   Product.associate = function(models) {
-    // Product.belongsToMany(models.AttributeValue, {
-    //   through: models.ProductAttribute,
-    // })
-    // Product.hasMany(models.AttributeValue, {
-    //   as: 'productAttr',
-    // })
   }
   return Product;
 }

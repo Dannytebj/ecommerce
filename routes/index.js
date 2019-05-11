@@ -14,7 +14,8 @@ const {
   productSearch,
   productsInCategory,
   productDetails,
-  productLocation
+  productLocation,
+  postReview
  } = require('../controllers/productController');
 const {
   validateToken,
@@ -55,6 +56,7 @@ router.get('/products/search/', productSearch);
 router.get('/products/:product_id', getSingleProduct);
 router.get('/products/:product_id/details', productDetails);
 router.get('/products/:product_id/locations', productLocation);
+router.post('/products/:product_id/reviews', postReview);
 router.get('/products/inCategory/:category_id', productsInCategory);
 
 
