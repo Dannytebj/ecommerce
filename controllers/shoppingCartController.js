@@ -197,7 +197,39 @@ exports.saveForLater = async (req, res, next) => {
       error: errorBody(400, "USR_02", "item_id is required", "item_id")
     })
   }
+}
 
+exports.getSavedProducts = async (req, res, next) => {
+  const { cart_id } = req.params;
+  if(cart_id.trim()) {
+    try {
+      const cartItems = await ShoppingCart.findAll({
+        where: { cart_id, buy_now: 0 },
+        include: [{
+          model: Product,
+          attributes: { include: ['name', 'price'] }
+        }]
+      });
+
+      const cart = cartItems.map((item) => {
+        return {
+          item_id: item.item_id,
+          name: item.Product.name,
+          attributes: item.attributes,
+          price: item.Product.price,
+        }
+      })
+
+      res.status(200).send(cart);
+    }
+    catch(error) {
+      next(error);
+    }
+  } else {
+    res.status(400).send({
+      error: errorBody(400, "USR_02", "cart_id is required", "cart_id")
+    })
+  }
 }
 
 /**
