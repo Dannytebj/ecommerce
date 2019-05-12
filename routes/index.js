@@ -22,7 +22,11 @@ const {
  const {
    generateId,
    addToCart,
-   getCart
+   getCart,
+   updateItem,
+   emptyCart,
+   getTotalAmountFromCart,
+   deleteProductFromCart
   } = require('../controllers/shoppingCartController');
 const {
   validateToken,
@@ -31,7 +35,9 @@ const {
   validateUpdateCustomer,
   validatCustomerCard,
   validateCustomerAddy,
-  validateReview
+  validateReview,
+  validateCart,
+  validateUpdateCart
 } = require('../middlewares/validators');
 
 const router = express.Router();
@@ -70,8 +76,13 @@ router.get('/products/inCategory/:category_id', productsInCategory);
 
 // Shopping Cart
 router.get('/shoppingcart/generateUniqueId', generateId);
-router.post('/shoppingcart/add', addToCart);
+router.post('/shoppingcart/add', validateCart, addToCart);
 router.get('/shoppingcart/:cart_id', getCart);
+router.delete('/shoppingcart/empty/:cart_id', emptyCart);
+router.get('/shoppingcart/totalAmount/:cart_id', getTotalAmountFromCart);
+router.put('/shoppingcart/update/:item_id', validateUpdateCart, updateItem);
+router.delete('/shoppingcart/removeProduct/:item_id', deleteProductFromCart);
+
 
 
 module.exports = router;

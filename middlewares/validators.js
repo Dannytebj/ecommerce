@@ -135,3 +135,44 @@ exports.validatCustomerCard = (req, res, next) => {
     }
   });
 }
+
+exports.validateCart = (req, res, next) => {
+  let schema = Joi.object().keys({
+    cart_id:Joi.string().trim().required().error(() => 'cart_id must be a string'),
+    product_id: Joi.number().required().error(() => 'product_id is required'),
+    attributes: Joi.string().trim().required().error(() => 'attributes is required & must be a string'),
+    quantity: Joi.number().error(() => 'quantity must be an integer'),
+  });
+
+  Joi.validate(req.body, schema, (error, data) => {
+    if (error) {
+      const message = error.details[0].message;
+      res.status(400).send({
+        code: "USR_02",
+        message,
+        field: "form"
+      });
+    } else {
+      next();
+    }
+  });
+};
+
+exports.validateUpdateCart = (req, res, next) => {
+  let schema = Joi.object().keys({
+    quantity: Joi.number().required().error(() => 'quantity is required & must be an integer'),
+  });
+
+  Joi.validate(req.body, schema, (error, data) => {
+    if (error) {
+      const message = error.details[0].message;
+      res.status(400).send({
+        code: "USR_02",
+        message,
+        field: "form"
+      });
+    } else {
+      next();
+    }
+  });
+};
