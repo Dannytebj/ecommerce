@@ -22,9 +22,6 @@ module.exports = (sequelize, DataTypes) => {
     underscored: true
   });
   AttributeValue.associate = function(models) {
-    // AttributeValue.belongsTo(models.ProductAttribute, {
-    //   foreignKey: 'attribute_value_id',
-    // })
     AttributeValue.belongsTo(models.Attribute, {
       foreignKey: 'attribute_id'
     })

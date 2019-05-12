@@ -30,7 +30,10 @@ const {
    saveForLater,
    getSavedProducts
   } = require('../controllers/shoppingCartController');
+
   const { getTaxes, getTaxById } = require('../controllers/taxController');
+
+  const { getShippingRegions, shippingRegion } = require('../controllers/shippingController');
 
   // Validators
 const {
@@ -93,6 +96,10 @@ router.get('/shoppingcart/getSaved/:cart_id', getSavedProducts);
 // Taxes
 router.get('/tax', getTaxes);
 router.get('/tax/:tax_id', getTaxById);
+
+// Shipping
+router.get('/shipping/regions', getShippingRegions);
+router.get('/shipping/regions/:shipping_region_id', shippingRegion);
 
 
 

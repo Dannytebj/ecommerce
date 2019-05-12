@@ -25,9 +25,6 @@ module.exports = (sequelize, DataTypes) => {
     Department.hasMany(models.Category, { 
       foreignKey: 'department_id'
     })
-    // Department.belongsTo(models.Category, {
-    //   foreignKey: 'department_id'
-    // })
   };
   return Department;
 };
