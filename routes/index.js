@@ -8,6 +8,7 @@ const {
 } = require('../controllers/attributesController');
 const { getCategories, getSingleCategory, getCategoriesOfDepartment } = require('../controllers/categoryController');
 const { getDepartments, getSingleDepartment } = require('../controllers/departmentController');
+
 const {
   getProducts,
   getSingleProduct,
@@ -18,6 +19,11 @@ const {
   postReview,
   getProductReviews
  } = require('../controllers/productController');
+ const {
+   generateId,
+   addToCart,
+   getCart
+  } = require('../controllers/shoppingCartController');
 const {
   validateToken,
   validateCustomerReg,
@@ -61,6 +67,11 @@ router.get('/products/:product_id/locations', productLocation);
 router.get('/products/:product_id/reviews', getProductReviews);
 router.post('/products/:product_id/reviews', validateReview, validateToken, postReview);
 router.get('/products/inCategory/:category_id', productsInCategory);
+
+// Shopping Cart
+router.get('/shoppingcart/generateUniqueId', generateId);
+router.post('/shoppingcart/add', addToCart);
+router.get('/shoppingcart/:cart_id', getCart);
 
 
 module.exports = router;
