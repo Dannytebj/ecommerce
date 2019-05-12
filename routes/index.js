@@ -1,4 +1,5 @@
 const express = require('express');
+// CONTROLLERS
 const { register, login, updateCustomer, getCustomer, updateCustomerAddress } = require('../controllers/customerController');
 const {
   getAttributes,
@@ -8,7 +9,6 @@ const {
 } = require('../controllers/attributesController');
 const { getCategories, getSingleCategory, getCategoriesOfDepartment } = require('../controllers/categoryController');
 const { getDepartments, getSingleDepartment } = require('../controllers/departmentController');
-
 const {
   getProducts,
   getSingleProduct,
@@ -30,6 +30,9 @@ const {
    saveForLater,
    getSavedProducts
   } = require('../controllers/shoppingCartController');
+  const { getTaxes, getTaxById } = require('../controllers/taxController');
+
+  // Validators
 const {
   validateToken,
   validateCustomerReg,
@@ -86,6 +89,10 @@ router.put('/shoppingcart/update/:item_id', validateUpdateCart, updateItem);
 router.delete('/shoppingcart/removeProduct/:item_id', deleteProductFromCart);
 router.get('/shoppingcart/saveForLater/:item_id', saveForLater);
 router.get('/shoppingcart/getSaved/:cart_id', getSavedProducts);
+
+// Taxes
+router.get('/tax', getTaxes);
+router.get('/tax/:tax_id', getTaxById);
 
 
 
