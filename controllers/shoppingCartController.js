@@ -169,9 +169,35 @@ exports.deleteProductFromCart = async (req, res, next) => {
 
   } else {
     res.status(400).send({
-      error: errorBody(400, "USR_02", "cart_id is required", "cart_id")
+      error: errorBody(400, "USR_02", "item_id is required", "item_id")
     })
   }
+}
+
+exports.saveForLater = async (req, res, next) => {
+  const { item_id } = req.params;
+  if (item_id.trim()) {
+    try {
+    const itemModel = await ShoppingCart.findByPk(item_id);
+    if (!itemModel) {
+      return res.status(404).send({
+        error: errorBody(404, "USR_05", "This item doesn't exist.", "item_id")
+      });
+    }
+    await itemModel.update({
+      buy_now: 0
+    });
+    res.sendStatus(200);
+  } catch(error) {
+    next(error);
+  }
+
+  } else {
+    res.status(400).send({
+      error: errorBody(400, "USR_02", "item_id is required", "item_id")
+    })
+  }
+
 }
 
 /**

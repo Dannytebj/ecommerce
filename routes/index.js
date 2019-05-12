@@ -26,7 +26,8 @@ const {
    updateItem,
    emptyCart,
    getTotalAmountFromCart,
-   deleteProductFromCart
+   deleteProductFromCart,
+   saveForLater
   } = require('../controllers/shoppingCartController');
 const {
   validateToken,
@@ -82,6 +83,7 @@ router.delete('/shoppingcart/empty/:cart_id', emptyCart);
 router.get('/shoppingcart/totalAmount/:cart_id', getTotalAmountFromCart);
 router.put('/shoppingcart/update/:item_id', validateUpdateCart, updateItem);
 router.delete('/shoppingcart/removeProduct/:item_id', deleteProductFromCart);
+router.get('/shoppingcart/saveForLater/:item_id', saveForLater);
 
 
 
