@@ -39,6 +39,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // version routes.
 app.use('/api/v1', routes);
+app.use(express.static(__dirname + "/public/index.html"));
 
 //  catch all 500 error
 app.use((err, req, res, next) => {
@@ -46,6 +47,7 @@ app.use((err, req, res, next) => {
   return res.status(500)
     .send({ message: 'An error occured' })
 });
+
 
 db.sequelize.authenticate()
   .then(() => {

@@ -2,10 +2,13 @@
   "name": "ecommerce",
   "version": "1.0.0",
   "description": "An online shirt store",
-  "main": "index.js",
+  "engines": {
+    "node": "10.15.3",
+    "npm": "6.4.1"
+  },
   "scripts": {
     "start:dev": "nodemon app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "NODE_ENV=production node app.js"
   },
   "author": "Daniel Atebije",
   "license": "ISC",
