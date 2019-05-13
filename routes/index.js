@@ -35,6 +35,8 @@ const {
 
   const { getShippingRegions, shippingRegion } = require('../controllers/shippingController');
 
+  const { createOrder, getOrderInfo, customerOrders, getShortOrderDetails } = require('../controllers/ordersController');
+
   // Validators
 const {
   validateToken,
@@ -45,7 +47,8 @@ const {
   validateCustomerAddy,
   validateReview,
   validateCart,
-  validateUpdateCart
+  validateUpdateCart,
+  validateOrder
 } = require('../middlewares/validators');
 
 const router = express.Router();
@@ -100,6 +103,12 @@ router.get('/tax/:tax_id', getTaxById);
 // Shipping
 router.get('/shipping/regions', getShippingRegions);
 router.get('/shipping/regions/:shipping_region_id', shippingRegion);
+
+// Orders
+router.post('/orders', validateOrder, validateToken, createOrder);
+router.get('/orders/inCustomer', validateToken, customerOrders);
+router.get('/orders/:order_id', validateToken, getOrderInfo);
+router.get('/orders/shortDetail/:order_id', validateToken, getShortOrderDetails);
 
 
 

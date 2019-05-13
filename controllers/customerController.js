@@ -108,6 +108,3 @@ exports.updateCustomerAddress = async (req, res, next) => {
   }
 }
 
-exports.updateCustomerCard = async (req, res, next) => {
-  // Use same method above, create a different validator
-}

@@ -176,3 +176,24 @@ exports.validateUpdateCart = (req, res, next) => {
     }
   });
 };
+
+exports.validateOrder = (req, res, next) => {
+  let schema = Joi.object().keys({
+    cart_id:Joi.string().trim().required().error(() => 'cart_id is required & must be a string'),
+    tax_id: Joi.number().required().error(() => 'tax_id is required & must be an integer'),
+    shipping_id: Joi.number().required().error(() => 'shipping_id is required & must be an integer'),
+  });
+
+  Joi.validate(req.body, schema, (error, data) => {
+    if (error) {
+      const message = error.details[0].message;
+      res.status(400).send({
+        code: "USR_02",
+        message,
+        field: "form"
+      });
+    } else {
+      next();
+    }
+  });
+};
