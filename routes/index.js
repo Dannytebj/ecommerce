@@ -37,6 +37,8 @@ const {
 
   const { createOrder, getOrderInfo, customerOrders, getShortOrderDetails } = require('../controllers/ordersController');
 
+  const { chargeCustomer, stripeHook } = require('../controllers/stripeController');
+
   // Validators
 const {
   validateToken,
@@ -111,7 +113,8 @@ router.get('/orders/:order_id', validateToken, getOrderInfo);
 router.get('/orders/shortDetail/:order_id', validateToken, getShortOrderDetails);
 
 //  Stripe
-router.post('/stripe/charge',);
+router.post('/stripe/charge', chargeCustomer);
+router.post('/stripe/webhook', stripeHook);
 
 
 
