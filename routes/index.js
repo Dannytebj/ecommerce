@@ -110,6 +110,9 @@ router.get('/orders/inCustomer', validateToken, customerOrders);
 router.get('/orders/:order_id', validateToken, getOrderInfo);
 router.get('/orders/shortDetail/:order_id', validateToken, getShortOrderDetails);
 
+//  Stripe
+router.post('/stripe/charge',);
+
 
 
 module.exports = router;

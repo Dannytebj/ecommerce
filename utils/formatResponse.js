@@ -19,3 +19,16 @@ exports.getCartItems = async (cartItems) => {
   })
   return cart;
 }
+
+exports.getOrderDetails = async (cartItems, order_id) => {
+  return cartItems.map((item) => {
+    return {
+      order_id,
+      product_id: item.product_id,
+      attributes: item.attributes,
+      product_name: item.Product.name,
+      quantity: item.quantity,
+      unit_cost: item.Product.price,
+    }
+  })
+}

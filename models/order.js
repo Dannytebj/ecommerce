@@ -48,10 +48,6 @@ module.exports = (sequelize, DataTypes) => {
     tax_id: {
       type:  DataTypes.INTEGER(11),
       defaultValue: null
-    },
-    cart_id: {
-      type: DataTypes.STRING(32),
-      allowNull: false
     }
   }, {
     freezeTableName: true,
@@ -61,6 +57,9 @@ module.exports = (sequelize, DataTypes) => {
 
   Order.associate = function(models) {
     // associations can be defined here
+    Order.belongsTo(models.Customer, {
+      foreignKey: 'customer_id'
+    })
   };
   return Order;
 };

@@ -1,7 +1,7 @@
 const uniqueId = require('uniqid');
 const { ShoppingCart, Product } = require('../models');
 const errorBody = require('../utils/errorStructure');
-const { getCartItems } = require('../utils/formatCartResponse');
+const { getCartItems } = require('../utils/formatResponse');
 
 
 exports.generateId = async (req, res, next) => {

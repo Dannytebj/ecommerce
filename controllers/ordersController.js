@@ -1,5 +1,6 @@
-const { Order, Customer, ShoppingCart, Product } = require('../models');
+const { Order, Customer, ShoppingCart, Product, OrderDetail } = require('../models');
 const errorBody = require('../utils/errorStructure');
+const { getOrderDetails } = require('../utils/formatResponse');
 
 
 exports.createOrder = async (req, res, next) => {
@@ -13,12 +14,20 @@ exports.createOrder = async (req, res, next) => {
       });
     }
     const newOrder = await Order.create({
-      cart_id,
       tax_id,
       shipping_id,
       customer_id,
       created_on: Date.now()
     });
+    const cartItems = await ShoppingCart.findAll({
+      where: { cart_id },
+      include: [{
+        model: Product
+      }]
+    });
+    const orderDetails = await getOrderDetails(cartItems, newOrder.order_id);
+    await OrderDetail.bulkCreate(orderDetails);
+
     res.status(201).send({ orderId: newOrder.order_id })
   }
   catch (error) {
@@ -34,25 +43,14 @@ exports.getOrderInfo = async (req, res, next) => {
       return res.status(400).send({
         error: errorBody(400, "USR_02", "This order does not exists.", "order_id") 
       });
-    }
-    const cartItems = await ShoppingCart.findAll({
-      where: { cart_id: order.cart_id },
-      include: [{
-        model: Product
-      }]
-    });
-    const orderInfo = cartItems.map((item) => {
-      return {
-        order_id,
-        product_id: item.product_id,
-        attributes: item.attributes,
-        product_name: item.Product.name,
-        quantity: item.quantity,
-        unit_cost: item.Product.price,
-        sub_total: item.quantity * Number(item.Product.price)
-      }
-    })
-    res.status(200).send(orderInfo);
+    } 
+    const details = await OrderDetail.findAll({ where: { order_id }, raw: true });
+  
+    details.map((detail) => {
+        detail.subtotal= detail.quantity * Number(detail.unit_cost)
+        return detail;
+      });
+      return res.status(200).send(details);
   }
   catch( error) {
     next(error);
@@ -75,31 +73,34 @@ exports.customerOrders = async (req, res, next) => {
 exports.getShortOrderDetails = async (req, res, next) => {
   const { order_id } = req.params;
   try {
-    const order = await Order.findOne({ where: {order_id}});
+    const order = await Order.findOne({
+      where: { order_id },
+        include: [{
+          model: Customer,
+          attributes: ['name']
+        }],
+      attributes: { 
+        exclude: ['comments', 'auth_code', 'reference', 'shipping_id', 'tax_id'] 
+      }
+    });
     if (!order) {
       return res.status(400).send({
-        error: errorBody(400, "USR_02", "This order does not exists.", "order_id") 
+        error: errorBody(400, "USR_02", "This order does not exists.", "order_id")
       });
     }
-    const cartItems = await ShoppingCart.findAll({
-      where: { cart_id: order.cart_id },
-      include: [{
-        model: Product
-      }]
-    });
-    const shortInfo = cartItems.map((item) => {
-      return {
-        order_id,
-        total_amount: item.quantity * Number(item.Product.price),
-        created_on: order.created_on,
-        shipped_on: order.shipped_on,
-        status: order.status,
-        name: item.Product.name,
-      }
-    })
-    res.status(200).send(shortInfo);
+    const {total_amount, created_on, shipped_on, status} = order;
+    const shortDetails = {
+      order_id,
+      total_amount,
+      created_on,
+      shipped_on,
+      status,
+      name: order.Customer.name
+    }
+
+    res.status(200).send(shortDetails);
   }
-  catch( error) {
+  catch (error) {
     next(error);
   }
 }
