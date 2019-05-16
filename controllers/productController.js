@@ -6,8 +6,8 @@ const errorBody = require('../utils/errorStructure');
 const Op = Sequelize.Op;
 
 exports.getProducts = async (req, res, next) => {
-  const limit = 20 || req.params.limit;
-  const offset = 0 || req.params.limit;
+  const limit = 20 || Number(req.query.limit);
+  const offset = 0 || Number(req.query.offset);
   const description_length = 200 || req.params.description_length;
   const page = 1 || req.params.page;
   try {
