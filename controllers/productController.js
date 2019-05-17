@@ -58,13 +58,14 @@ exports.getCategoriesIndepartment = async (req, res, next) => {
 exports.productSearch = async (req, res, next) => {
   const { query_string, all_words, page } = req.query;
   const allWords = 'on' || all_words;
-  const currentPage = 1 || page;
-  const limit = 20 || req.params.limit;
+  const limit = (req.query.limit) ? Number(req.query.limit) : 20;
+  const offset = (req.query.offset) ? Number(req.query.offset) : 0;
   const description_length = 200 || req.params.description_length;
   if (query_string !== '' || null) {
     try {
       const records = await Product.findAndCountAll({
         limit,
+        offset,
         where: {
           [Op.or]: [
             {
