@@ -6,13 +6,12 @@ const errorBody = require('../utils/errorStructure');
 const Op = Sequelize.Op;
 
 exports.getProducts = async (req, res, next) => {
-  const limit = 20 || Number(req.query.limit);
-  const offset = 0 || Number(req.query.offset);
+  const limit = (req.query.limit) ? Number(req.query.limit) : 20;
+  const offset = (req.query.offset) ? Number(req.query.offset) : 0;
   const description_length = 200 || req.params.description_length;
   const page = 1 || req.params.page;
   try {
     const records = await Product.findAndCountAll();
-    // const pages = Math.ceil(records.count / limit)
 
     if (records) {
       const products = await Product.findAll({
@@ -41,8 +40,8 @@ exports.getSingleProduct = async (req, res, next) => {
   try {
       const product = await Product.findOne({ where: { product_id }});
       if (!product) {
-        return res.status(404).send({ 
-          message: `Product with id ${product_id} not found`
+        return res.status(404).send({
+          error: errorBody(404, "USR_05", "This product doesn't exist.", "product_id")
         });
       }
       return res.status(200).send(product);
@@ -95,10 +94,17 @@ exports.productSearch = async (req, res, next) => {
 }
 
 exports.productsInCategory = async (req, res, next) => {
+  const limit = (req.query.limit) ? Number(req.query.limit) : 20;
+  const offset = (req.query.offset) ? Number(req.query.offset) : 0;
   const { category_id } = req.params;
 
   try {
-    const products = await ProductCategory.findAndCountAll({ where: { category_id }, include: [{ model: Product }]})
+    const products = await ProductCategory.findAndCountAll({
+      limit,
+      offset, 
+      where: { category_id },
+       include: [{ model: Product }]
+      })
     if (!products) {
       return res.status(200).send({ message: 'There are no products in this category' });
     }
@@ -233,5 +239,3 @@ exports.getProductReviews = async (req, res, next) => {
     next(error);
   }
 };
-
-
