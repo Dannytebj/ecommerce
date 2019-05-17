@@ -20,10 +20,5 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: false,
     underscored: true
   });
-  ProductAttribute.associate = function(models) {
-    ProductAttribute.hasMany(models.AttributeValue, {
-      foreignKey: 'attribute_value_id',
-    })
-  }
   return ProductAttribute;
 }

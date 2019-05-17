@@ -18,9 +18,13 @@ module.exports = (sequelize, DataTypes) => {
     underscored: true
   });
   Attribute.associate = function(models) {
-    Attribute.hasMany(models.AttributeValue, {
-      foreignKey: 'attribute_id',
-    })
+    // Attribute.hasMany(models.AttributeValue, {
+    //   foreignKey: 'attribute_id',
+    // })
+    Attribute.belongsToMany(models.Product, {
+      through: 'ProductAttribute',
+      foreignKey: 'attribute_value_id'
+    });
   }
   return Attribute;
 }

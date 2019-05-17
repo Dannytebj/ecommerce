@@ -52,6 +52,11 @@ module.exports = (sequelize, DataTypes) => {
     Product.hasMany(models.Review, {
       foreignKey: 'product_id'
     });
+    Product.belongsToMany(models.AttributeValue, {
+      through: 'ProductAttribute',
+      foreignKey: 'product_id'
+    })
+   
   }
   return Product;
 }

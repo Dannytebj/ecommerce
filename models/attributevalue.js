@@ -25,6 +25,10 @@ module.exports = (sequelize, DataTypes) => {
     AttributeValue.belongsTo(models.Attribute, {
       foreignKey: 'attribute_id'
     })
+    AttributeValue.belongsToMany(models.Product, {
+      through: 'ProductAttribute',
+      foreignKey: 'attribute_value_id'
+    })
 
   }
   return AttributeValue;
