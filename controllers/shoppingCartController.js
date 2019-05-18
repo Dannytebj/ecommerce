@@ -36,6 +36,7 @@ exports.addToCart = async (req, res, next) => {
       added_on: Date.now()
     });
     const cartItems = await ShoppingCart.findAll({
+      where: { cart_id },
       include: [{
         model: Product
       }]
