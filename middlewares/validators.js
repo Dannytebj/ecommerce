@@ -7,7 +7,6 @@ exports.validateToken = (req, res, next) => {
   const token = req.body.accessToken
     || req.query.token
     || req.headers['authorization'];
-    console.log(token);
   if (!token) {
     return res.status(401).send({
       error: errorBody(401, "AUT_01", "Authorization code is empty.", "token")
