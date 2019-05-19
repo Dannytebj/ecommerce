@@ -42,6 +42,7 @@ exports.addToCart = async (req, res, next) => {
       }]
     });
     const cart = await getCartItems(cartItems);
+    
     res.status(200).send(cart);
   }
   catch (error) {
@@ -136,7 +137,18 @@ exports.getTotalAmountFromCart = async (req, res, next) => {
           model: Product
         }]
       });
-      const cart = await getCartItems(cartItems);
+      const cart = cartItems.map((item) => {
+        return {
+          item_id: item.item_id,
+          name: item.Product.name,
+          attributes: item.attributes,
+          product_id: item.product_id,
+          price: item.Product.price * item.quantity,
+          quantity: item.quantity,
+          image: item.Product.image,
+          subTotal: item.Product.price
+        }
+      });
 
       const total_amount = cart.reduce((acc, item) => acc + Number(item.price), 0);
 
