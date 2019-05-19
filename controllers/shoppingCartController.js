@@ -82,6 +82,7 @@ exports.updateItem = async (req, res, next) => {
       await itemModel.update(req.body);
 
       const cartItems = await ShoppingCart.findAll({
+        where: { cart_id: itemModel.cart_id },
         include: [{
           model: Product
         }]
