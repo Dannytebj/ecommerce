@@ -14,7 +14,7 @@ exports.getCartItems = async (cartItems) => {
       price: item.Product.price,
       quantity: item.quantity,
       image: item.Product.image,
-      subTotal: item.Product.price
+      subTotal: Number(item.Product.price) * item.quantity
     }
   })
   return cart;
