@@ -143,14 +143,14 @@ exports.getTotalAmountFromCart = async (req, res, next) => {
           name: item.Product.name,
           attributes: item.attributes,
           product_id: item.product_id,
-          price: item.Product.price * item.quantity,
+          price: item.Product.price,
           quantity: item.quantity,
           image: item.Product.image,
-          subTotal: item.Product.price
+          subTotal: item.Product.price * item.quantity
         }
       });
 
-      const total_amount = cart.reduce((acc, item) => acc + Number(item.price), 0);
+      const total_amount = cart.reduce((acc, item) => acc + Number(item.subTotal), 0);
 
       res.status(200).send({ total_amount });
     }
