@@ -34,7 +34,9 @@ exports.validateCustomerReg = (req, res, next) => {
   Joi.validate(req.body, schema, (error, data) => {
     if (error) {
       const message = error.details[0].message;
-      res.status(400).send({ message });
+      res.status(400).send({ 
+        error: errorBody(400, "USR_02", message, "token")
+       });
     } else {
       next();
     }
@@ -50,7 +52,9 @@ exports.validateCustomerLog = (req, res, next) => {
   Joi.validate(req.body, schema, (error, data) => {
     if (error) {
       const message = error.details[0].message;
-      res.status(400).send({ message });
+      res.status(400).send({ 
+        error: errorBody(400, "USR_02", message, "token")
+       });
     } else {
       next();
     }
@@ -65,7 +69,9 @@ exports.validateReview = (req, res, next) => {
    Joi.validate(req.body, schema, (error, data) => {
       if (error) {
         const message = error.details[0].message;
-        res.status(400).send({ message });
+        res.status(400).send({ 
+          error: errorBody(400, "USR_02", message, "token")
+         });
       } else {
         next();
       }
@@ -85,7 +91,9 @@ exports.validateUpdateCustomer = (req, res, next) => {
   Joi.validate(req.body, schema, (error, data) => {
     if (error) {
       const message = error.details[0].message;
-      res.status(400).send({ message });
+      res.status(400).send({ 
+        error: errorBody(400, "USR_02", message, "token")
+       });
     } else {
       next();
     }
@@ -107,9 +115,7 @@ exports.validateCustomerAddy = (req, res, next) => {
     if (error) {
       const message = error.details[0].message;
       res.status(400).send({
-        code: "USR_02",
-        message,
-        field: "form"
+        error: errorBody(400, "USR_02", message, "customer_address")
       });
     } else {
       next();
@@ -126,9 +132,7 @@ exports.validatCustomerCard = (req, res, next) => {
     if (error) {
       const message = error.details[0].message;
       res.status(400).send({
-        code: "USR_02",
-        message,
-        field: "form"
+        error: errorBody(400, "USR_02", message, "customer_card")
       });
     } else {
       next();
@@ -148,9 +152,7 @@ exports.validateCart = (req, res, next) => {
     if (error) {
       const message = error.details[0].message;
       res.status(400).send({
-        code: "USR_02",
-        message,
-        field: "form"
+        error: errorBody(400, "USR_02", message, "cart")
       });
     } else {
       next();
@@ -167,9 +169,7 @@ exports.validateUpdateCart = (req, res, next) => {
     if (error) {
       const message = error.details[0].message;
       res.status(400).send({
-        code: "USR_02",
-        message,
-        field: "form"
+        error: errorBody(400, "USR_02", message, "update cart")
       });
     } else {
       next();
@@ -188,9 +188,7 @@ exports.validateOrder = (req, res, next) => {
     if (error) {
       const message = error.details[0].message;
       res.status(400).send({
-        code: "USR_02",
-        message,
-        field: "form"
+        error: errorBody(400, "USR_02", message, "order")
       });
     } else {
       next();

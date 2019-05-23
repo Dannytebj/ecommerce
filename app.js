@@ -7,6 +7,8 @@ const FacebookStrategy = require('passport-facebook');
 const port = parseInt(process.env.PORT, 10) || 9000;
 const db = require('./models/index');
 const routes = require('./routes/');
+const errorBody = require('./utils/errorStructure');
+
 
 
 // Set up the express app
@@ -52,7 +54,9 @@ app.use(express.static(__dirname + "/public/index.html"));
 app.use((err, req, res, next) => {
   console.log(err);
   return res.status(500)
-    .send({ message: 'An error occured' })
+    .send({ 
+      error: errorBody(500, "USR_02", "An error occured", "Server")
+    })
 });
 
 
