@@ -100,7 +100,7 @@ exports.validateCustomerAddy = (req, res, next) => {
     region: Joi.string().trim().required().error(() => 'region must be a string & not empty'),
     postal_code: Joi.string().trim().required().error(() => 'postal_code must be a string & not empty'),
     country: Joi.string().trim().required().error(() => 'country must be a string & not empty'),
-    shipping_region_id: Joi.number().trim().required().error(() => 'shipping_region_id must be a positive number'),
+    shipping_region_id: Joi.number().required().error(() => 'shipping_region_id must be a positive number'),
   });
 
   Joi.validate(req.body, schema, (error, data) => {
